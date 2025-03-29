@@ -9,8 +9,8 @@ import ProductsDAO from "./DAO/ProductsDAO.js";
 const app = express();
 
 app.use(cors());
-app.use(express.json());
-app.use(express.urlencoded({extended: true}));
+app.use(express.json({limit:"50mb"}));
+app.use(express.urlencoded({extended: true, limit:"50mb"}));
 
 app.get("/", (req, res) => {
     res.send("Hello World");
@@ -76,7 +76,7 @@ app.get("/api/:user_id/products",async (req, res) => {
 app.post("/api/post/products", async (req, res) => {
     try {
         const product = req.body;
-    // console.log(name, price);
+    // console.log(name, price,image,quantity,currency);
         const result = await ProductsDAO.addProduct(product);
         if(result.error) {
             return res.status(400).json({error: result.error});
