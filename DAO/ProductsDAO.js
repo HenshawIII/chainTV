@@ -1,3 +1,5 @@
+import { ObjectId } from "mongodb";
+
 let Prodcuts;
 
 export default class ProductsDAO {  
@@ -15,6 +17,7 @@ export default class ProductsDAO {
     static async addProduct(prod) {  
         try {
             const product = await Prodcuts.insertOne(prod);
+            console.log(product);
             return product;
         } catch (e) {
             console.error(`Unable to add product: ${e}`);
@@ -37,4 +40,34 @@ export default class ProductsDAO {
             return{error: e};
         }   
     }
+
+    static async updateProduct( user_id, product) {
+        try {
+            const updateResult = await Prodcuts.updateOne({_id: new ObjectId(product.id),user_id: user_id}, {$set: {
+                name: product.name,
+                price: product.price,
+                imageUrl: product.imageUrl,
+                description: product.description,
+                quantity: product.quantity,
+                currency: product.currency
+            }});
+            return updateResult;
+        } catch (e) {
+            console.error(`Unable to update product: ${e}`);    
+            return {error: e};
+        }
+    }
+
+    static async deleteProduct(id,user_id) {
+        try {
+            const deleteResult = await Prodcuts.deleteOne({_id: new ObjectId(id),user_id: user_id});
+            console.log(deleteResult);
+            return deleteResult;
+        } catch (e) {
+            console.error(`Unable to delete product: ${e}`);    
+            return {error: e};
+        }
+    }
+    
+
 }
