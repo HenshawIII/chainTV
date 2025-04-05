@@ -119,7 +119,7 @@ app.put("/api/update/products/:user_id", async (req, res) => {
     }
 })
 
-app.delete("/api/delete/products/:id/:user_id   ", async (req, res) => {
+app.delete("/api/delete/products/:id/:user_id", async (req, res) => {
     try {
         const {id,user_id} = req.params;
         const result = await ProductsDAO.deleteProduct(id,user_id);

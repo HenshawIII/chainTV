@@ -60,6 +60,7 @@ export default class ProductsDAO {
 
     static async deleteProduct(id,user_id) {
         try {
+            console.log(id,user_id);
             const deleteResult = await Prodcuts.deleteOne({_id: new ObjectId(id),user_id: user_id});
             console.log(deleteResult);
             return deleteResult;
