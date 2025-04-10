@@ -3,7 +3,7 @@ import dotenv from "dotenv";
 import { MongoClient,ServerApiVersion } from "mongodb";
 import UsersDAO from "./DAO/UsersDAO.js";
 import ProductsDAO from "./DAO/ProductsDAO.js";
-
+import StreamsDAO from "./DAO/StreamsDAO.js";
 
 
 dotenv.config();
@@ -15,6 +15,7 @@ MongoClient.connect(uri).then(async (client) => {
     
     await UsersDAO.injectDB(client);
     await ProductsDAO.injectDB(client);
+    await StreamsDAO.injectDB(client);
     console.log("Connected to MongoDB");
     app.listen(process.env.PORT, () => {
         console.log(`Server is running on port ${process.env.PORT}`);

@@ -6,6 +6,7 @@ import {hashPassword,comparePass} from "./auth.js";
 import authMid from "./middleware/authMid.js";
 import ProductsDAO from "./DAO/ProductsDAO.js";
 import cloudinary from "./cloudinary.js";
+import streamsRouter from "./streams.js";
 
 const app = express();
 
@@ -131,8 +132,9 @@ app.delete("/api/delete/products/:id/:user_id", async (req, res) => {
         console.log(error)
     }   
 })
-// app.use("/restaurants",authMid, restRouter);
+// app.use("/restaurants",authMid, restRouter
 
+app.use("/api/streams",streamsRouter);
 
 
 
