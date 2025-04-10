@@ -5,8 +5,10 @@ const router = express.Router();
 
 router.route("/addstream").post(async (req,res) => {
     try {
-        const {streamId,streamPrice,creatorId} = req.body;
-        const result = await StreamsDAO.insertStream(streamId,streamPrice,creatorId);
+        const {playbackId,viewMode,amount,streamName,creatorId} = req.body;
+
+        
+        const result = await StreamsDAO.insertStream(playbackId,viewMode,amount,streamName,creatorId);
         if(result.error) {
             return res.status(400).json({error: result.error});
         }
@@ -21,8 +23,8 @@ router.route("/findpayinguser").get(async (req,res) => {
     try {
         // const streamId = req.body.streamId;
         // const userId = req.body.userId;
-        const {streamId,userId} = req.query;
-        const result = await StreamsDAO.findPayingUser(streamId,userId);
+        const {playbackId,userId} = req.query;
+        const result = await StreamsDAO.findPayingUser(playbackId,userId);
         if(result.error) {
             return res.status(400).json({error: result.error});
         }
@@ -36,8 +38,8 @@ router.route("/findpayinguser").get(async (req,res) => {
 
 router.route("/addpayinguser").post(async (req,res) => {
     try {
-        const {streamId,userId} = req.body;
-        const result = await StreamsDAO.addPayingUser(streamId,userId);
+        const {playbackId,userId} = req.body;
+        const result = await StreamsDAO.addPayingUser(playbackId,userId);
         if(result.error) {
             return res.status(400).json({error: result.error});
         }
@@ -50,8 +52,8 @@ router.route("/addpayinguser").post(async (req,res) => {
 
 router.route("/deletepayinguser").delete(async (req,res) => {
     try {
-        const {streamId,userId} = req.body; 
-        const result = await StreamsDAO.deletePayingUser(streamId,userId);
+            const {playbackId,userId} = req.body; 
+        const result = await StreamsDAO.deletePayingUser(playbackId,userId);
         if(result.error) {
             return res.status(400).json({error: result.error});
         }

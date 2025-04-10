@@ -24,14 +24,16 @@ export default class StreamsDAO {
         }
     }
 
-    static async insertStream(streamId,streamPrice,creatorId) {
+    static async insertStream(playbackId,viewMode,amount,streamName,creatorId) {
         try {
             
             const stream =  await Streams.insertOne({
-                streamId,
-                streamPrice,
-                Users:[],
+                playbackId,
+                viewMode,
+                amount,
+                streamName,
                 creatorId,
+                Users:[],
             });
             return stream;
 
@@ -42,12 +44,12 @@ export default class StreamsDAO {
         }
     }
 
-    static async addPayingUser(streamId, userId) {
+    static async addPayingUser(playbackId, userId) {
 
         try {
             // const stream = await Streams.findOne({_id: new ObjectId(streamId)});
             // const user = await Users.findOne({_id: new ObjectId(userId)});
-            const User = await Streams.updateOne({streamId},{$push:{Users:userId}});
+            const User = await Streams.updateOne({playbackId},{$push:{Users:userId}});
             return User;
         } catch (error) {
             console.error(`Unable to add paying user: ${error}`);
@@ -55,10 +57,10 @@ export default class StreamsDAO {
         }
     }
 
-    static async findPayingUser(streamId,userId) {
+    static async findPayingUser(playbackId,userId) {
         try {
             // const User = await Streams.
-            const User = await Streams.findOne({streamId,Users:userId});
+            const User = await Streams.findOne({playbackId,Users:userId});
             if(!User) {
                 return {error: "User not found"};
             }
@@ -69,9 +71,9 @@ export default class StreamsDAO {
         }
     }
 
-    static async deletePayingUser(streamId,userId) {
+    static async deletePayingUser(playbackId,userId) {
         try {
-            const delUser = await Streams.updateOne({streamId},{$pull:{Users:userId}}); 
+            const delUser = await Streams.updateOne({playbackId},{$pull:{Users:userId}}); 
             if(!delUser) {
                 return {error: "User not found"};
             }
