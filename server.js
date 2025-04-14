@@ -7,7 +7,7 @@ import authMid from "./middleware/authMid.js";
 import ProductsDAO from "./DAO/ProductsDAO.js";
 import cloudinary from "./cloudinary.js";
 import streamsRouter from "./streams.js";
-
+import videosRouter from "./video.js";
 const app = express();
 
 app.use(cors());
@@ -135,7 +135,7 @@ app.delete("/api/delete/products/:id/:user_id", async (req, res) => {
 // app.use("/restaurants",authMid, restRouter
 
 app.use("/api/streams",streamsRouter);
-
+app.use("/api/videos",videosRouter);
 
 
 export default app;

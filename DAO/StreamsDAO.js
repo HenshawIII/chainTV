@@ -24,12 +24,13 @@ export default class StreamsDAO {
         }
     }
 
-    static async insertStream(playbackId,viewMode,amount,streamName,creatorId) {
+    static async insertStream(playbackId,viewMode,description,amount,streamName,creatorId) {
         try {
             
             const stream =  await Streams.insertOne({
                 playbackId,
                 viewMode,
+                description,
                 amount,
                 streamName,
                 creatorId,
@@ -80,6 +81,30 @@ export default class StreamsDAO {
             return delUser;
         } catch (error) {
             console.error(`Unable to delete paying user: ${error}`);
+            return {error: error};
+        }
+    }   
+
+    static async getStreamByPlaybackId(playbackId) {
+        try {
+            const stream = await Streams.findOne({playbackId});
+            if(!stream) {
+                return {error: "Stream not found"};
+            }
+            return stream;
+
+        } catch (error) {
+            console.error(`Unable to get stream by playbackId: ${error}`);  
+            return {error: error};
+        }
+    }
+
+    static async deleteStream(playbackId) {
+        try {
+            const stream = await Streams.deleteOne({playbackId});
+            return stream;
+        } catch (error) {
+            console.error(`Unable to delete stream: ${error}`);
             return {error: error};
         }
     }   
