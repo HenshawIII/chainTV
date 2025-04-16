@@ -1,4 +1,4 @@
-let Streams ;
+export let Streams ;
 
 export default class StreamsDAO {
     static async injectDB(conn) {

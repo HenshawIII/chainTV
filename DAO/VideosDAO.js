@@ -1,4 +1,4 @@
-let Videos ;
+export let Videos ;
 
 export default class VideosDAO {
     static async injectDB(conn) {
