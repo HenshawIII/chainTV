@@ -5,9 +5,9 @@ const router = express.Router();
 
 router.route("/addvideo").post(async (req,res) => {
     try {
-        const {playbackId, viewMode, amount, assetName, creatorId} = req.body;
+        const {playbackId, viewMode, amount, assetName, creatorId,donation} = req.body;
         
-        const result = await VideosDAO.insertVideo(playbackId, viewMode, amount, assetName, creatorId);
+        const result = await VideosDAO.insertVideo(playbackId, viewMode, amount, assetName, creatorId,donation);
         if(result.error) {
             return res.status(400).json({error: result.error});
         }

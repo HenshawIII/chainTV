@@ -11,6 +11,7 @@ import videosRouter from "./video.js";
 import {Streams} from "./DAO/StreamsDAO.js";
 import {Videos} from "./DAO/VideosDAO.js";
 import {Users} from "./DAO/UsersDAO.js";
+import WaitlistDAO from "./DAO/WaitlistDAO.js";
 
 const app = express();
 
@@ -59,54 +60,54 @@ app.post("/login", async (req, res) => {
     }
 }) 
 
-app.post("/api/user/addsetting",async (req,res)=>{
-    try {
-        const {creatorId,logo,title,description,bgcolor,color,fontSize,fontFamily} = req.body;
-        const setting = {creatorId,logo,title,description,bgcolor,color,fontSize,fontFamily};
-        const user = await Users.findOne({creatorId: creatorId});
-        if(user){
-            return res.status(400).json({error: "User already exists"});
-        }
-        const result = await Users.insertOne({creatorId,...setting});
-        if(result.error) {
-            return res.status(400).json({error: result.error});
-        }
-        return res.status(200).json({message: "Setting added successfully"});
-    } catch (error) {
-        console.log(error);
-        return res.status(500).json({error: error.message});
-    }
-})
+// app.post("/api/user/addsetting",async (req,res)=>{
+//     try {
+//         const {creatorId,logo,title,description,bgcolor,color,fontSize,fontFamily} = req.body;
+//         const setting = {creatorId,logo,title,description,bgcolor,color,fontSize,fontFamily};
+//         const user = await Users.findOne({creatorId: creatorId});
+//         if(user){
+//             return res.status(400).json({error: "User already exists"});
+//         }
+//         const result = await Users.insertOne({creatorId,...setting});
+//         if(result.error) {
+//             return res.status(400).json({error: result.error});
+//         }
+//         return res.status(200).json({message: "Setting added successfully"});
+//     } catch (error) {
+//         console.log(error);
+//         return res.status(500).json({error: error.message});
+//     }
+// })
 
-app.get("/api/user/getsetting/:creatorId",async (req,res)=>{
-    try {
-        const {creatorId} = req.params;
-        const user = await Users.findOne({creatorId: creatorId});
-        if(user){
-            return res.status(200).json({setting: user});
-        }
-        return res.status(404).json({error: "Setting not found"});
-    } catch (error) {
-        console.log(error);
-        return res.status(500).json({error: error.message});
-    }
-})
+// app.get("/api/user/getsetting/:creatorId",async (req,res)=>{
+//     try {
+//         const {creatorId} = req.params;
+//         const user = await Users.findOne({creatorId: creatorId});
+//         if(user){
+//             return res.status(200).json({setting: user});
+//         }
+//         return res.status(404).json({error: "Setting not found"});
+//     } catch (error) {
+//         console.log(error);
+//         return res.status(500).json({error: error.message});
+//     }
+// })
 
-app.put("/api/user/updatesetting/:creatorId",async (req,res)=>{
-    try {
-        // const {creatorId} = req.params;
-        const {creatorId,logo,title,description,bgcolor,color,fontSize,fontFamily} = req.body;
-        // const setting = {logo,title,description,bgcolor,color,fontSize,fontFamily};
-        const result = await Users.updateOne({creatorId: creatorId},{$set: {logo,title,description,bgcolor,color,fontSize,fontFamily}});
-        if(result.error) {
-            return res.status(400).json({error: result.error});
-        }
-        return res.status(200).json({message: "Setting updated successfully"});
-    } catch (error) {
-        console.log(error);
-        return res.status(500).json({error: error.message});
-    }
-})
+// app.put("/api/user/updatesetting/:creatorId",async (req,res)=>{
+//     try {
+//         // const {creatorId} = req.params;
+//         const {creatorId,logo,title,description,bgcolor,color,fontSize,fontFamily} = req.body;
+//         // const setting = {logo,title,description,bgcolor,color,fontSize,fontFamily};
+//         const result = await Users.updateOne({creatorId: creatorId},{$set: {logo,title,description,bgcolor,color,fontSize,fontFamily}});
+//         if(result.error) {
+//             return res.status(400).json({error: result.error});
+//         }
+//         return res.status(200).json({message: "Setting updated successfully"});
+//     } catch (error) {
+//         console.log(error);
+//         return res.status(500).json({error: error.message});
+//     }
+// })
 
 app.get("/api/:user_id/products",async (req, res) => { 
    try {
@@ -184,22 +185,36 @@ app.delete("/api/delete/products/:id/:user_id", async (req, res) => {
         console.log(error)
     }   
 })
-// app.use("/restaurants",authMid, restRouter
 
-app.put("/api/addonation",async (req,res)=>{
+app.post("/api/waitlist",async (req,res)=>{
     try {
-        const {creatorId,amount} = req.body;
-        const strm = await Streams.updateOne({creatorId: creatorId},{$set: {donation: [...amount]}});
-        const video = await Videos.updateOne({creatorId: creatorId},{$set: {donation: [...amount]}});
-        if(strm.error || video.error) {
-            return res.status(400).json({error: strm.error || video.error});
+        const {email,name,organization} = req.body;
+        const result = await WaitlistDAO.addWaitlist(email,name,organization);
+        if(result.error) {
+            return res.status(400).json({error: result.error});
         }
-        return res.status(200).json({message: "Donation added successfully"});
+        return res.status(200).json({message: "Waitlist added successfully"});
     } catch (error) {
         console.log(error);
         return res.status(500).json({error: error.message});
     }
 })  
+// app.use("/restaurants",authMid, restRouter
+
+// app.put("/api/addonation",async (req,res)=>{
+//     try {
+//         const {creatorId,amount} = req.body;
+//         const strm = await Streams.updateOne({creatorId: creatorId},{$set: {donation: [...amount]}});
+//         const video = await Videos.updateOne({creatorId: creatorId},{$set: {donation: [...amount]}});
+//         if(strm.error || video.error) {
+//             return res.status(400).json({error: strm.error || video.error});
+//         }
+//         return res.status(200).json({message: "Donation added successfully"});
+//     } catch (error) {
+//         console.log(error);
+//         return res.status(500).json({error: error.message});
+//     }
+// })  
 
 app.use("/api/streams",streamsRouter);
 app.use("/api/videos",videosRouter);

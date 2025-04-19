@@ -23,7 +23,7 @@ export default class VideosDAO {
         }
     }
 
-    static async insertVideo(playbackId, viewMode, amount, assetName, creatorId) {
+    static async insertVideo(playbackId, viewMode, amount, assetName, creatorId,donation) {
         try {
             const video = await Videos.insertOne({
                 playbackId,
@@ -31,7 +31,8 @@ export default class VideosDAO {
                 amount,
                 assetName,
                 creatorId,
-                Users: []
+                Users: [],
+                donation,
             });
             return video;
         } catch (error) {

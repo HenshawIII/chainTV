@@ -5,10 +5,10 @@ const router = express.Router();
 
 router.route("/addstream").post(async (req,res) => {
     try {
-        const {playbackId,viewMode,description,amount,streamName,creatorId} = req.body;
+        const {playbackId,viewMode,description,amount,streamName,creatorId,logo,title,bgcolor,color,fontSize,fontFamily,donation} = req.body;
 
         
-        const result = await StreamsDAO.insertStream(playbackId,viewMode,description,amount,streamName,creatorId);
+        const result = await StreamsDAO.insertStream(playbackId,viewMode,description,amount,streamName,creatorId,logo,title,bgcolor,color,fontSize,fontFamily,donation);
         if(result.error) {
             return res.status(400).json({error: result.error});
         }

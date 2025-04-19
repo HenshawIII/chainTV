@@ -1,32 +1,30 @@
-# User Settings API Documentation
+# Videos Service API Documentation
 
-This documentation provides details about the User Settings API endpoints and how to interact with them.
+This documentation provides details about the Videos Service API endpoints and how to interact with them.
 
 ## Base URL
 ```
-http://your-server-url/api/user
+http://your-server-url/api/videos
 ```
 
 ## Endpoints
 
-### 1. Add User Settings
-Adds new settings for a user/creator.
+### 1. Add Video
+Adds a new video to the system.
 
-**Endpoint:** `/addsetting`  
+**Endpoint:** `/addvideo`  
 **Method:** `POST`  
 **Content-Type:** `application/json`
 
 #### Request Body
 ```json
 {
+    "playbackId": "string",
+    "viewMode": "string",
+    "amount": "number",
+    "assetName": "string",
     "creatorId": "string",
-    "logo": "string",
-    "title": "string",
-    "description": "string",
-    "bgcolor": "string",
-    "color": "string",
-    "fontSize": "string",
-    "fontFamily": "string"
+    "donation": "array"
 }
 ```
 
@@ -34,85 +32,16 @@ Adds new settings for a user/creator.
 - **Success (200)**
 ```json
 {
-    "message": "Setting added successfully"
-}
-```
-- **Error (400)**
-```json
-{
-    "error": "User already exists"
-}
-```
-- **Error (500)**
-```json
-{
-    "error": "Server error message"
-}
-```
-
-### 2. Get User Settings
-Retrieves settings for a specific user/creator.
-
-**Endpoint:** `/getsetting/:creatorId`  
-**Method:** `GET`  
-**URL Parameters:**
-- `creatorId`: string (in URL path)
-
-#### Response
-- **Success (200)**
-```json
-{
-    "setting": {
+    "message": "Video added successfully",
+    "video": {
+        "playbackId": "string",
+        "viewMode": "string",
+        "amount": "number",
+        "assetName": "string",
         "creatorId": "string",
-        "logo": "string",
-        "title": "string",
-        "description": "string",
-        "bgcolor": "string",
-        "color": "string",
-        "fontSize": "string",
-        "fontFamily": "string"
+        "donation": [],
+        "Users": []
     }
-}
-```
-- **Error (404)**
-```json
-{
-    "error": "Setting not found"
-}
-```
-- **Error (500)**
-```json
-{
-    "error": "Server error message"
-}
-```
-
-### 3. Update User Settings
-Updates existing settings for a user/creator.
-
-**Endpoint:** `/updatesetting/:creatorId`  
-**Method:** `PUT`  
-**Content-Type:** `application/json`
-
-#### Request Body
-```json
-{
-    "creatorId": "string",
-    "logo": "string",
-    "title": "string",
-    "description": "string",
-    "bgcolor": "string",
-    "color": "string",
-    "fontSize": "string",
-    "fontFamily": "string"
-}
-```
-
-#### Response
-- **Success (200)**
-```json
-{
-    "message": "Setting updated successfully"
 }
 ```
 - **Error (400)**
@@ -121,69 +50,193 @@ Updates existing settings for a user/creator.
     "error": "Error message"
 }
 ```
-- **Error (500)**
+
+### 2. Find Paying User
+Checks if a user has paid for a specific video.
+
+**Endpoint:** `/findpayinguser`  
+**Method:** `GET`  
+**Query Parameters:**
+- `playbackId`: string
+- `userId`: string
+
+#### Response
+- **Success (200)**
 ```json
 {
-    "error": "Server error message"
+    "message": "User found",
+    "user": {
+        // User details
+    }
+}
+```
+- **Error (400)**
+```json
+{
+    "error": "User not found"
+}
+```
+
+### 3. Add Paying User
+Adds a user to the list of paying users for a video.
+
+**Endpoint:** `/addpayinguser`  
+**Method:** `POST`  
+**Content-Type:** `application/json`
+
+#### Request Body
+```json
+{
+    "playbackId": "string",
+    "userId": "string"
+}
+```
+
+#### Response
+- **Success (200)**
+```json
+{
+    "message": "User added successfully",
+    "user": {
+        // User details
+    }
+}
+```
+- **Error (400)**
+```json
+{
+    "error": "Error message"
+}
+```
+
+### 4. Delete Paying User
+Removes a user from the list of paying users for a video.
+
+**Endpoint:** `/deletepayinguser`  
+**Method:** `DELETE`  
+**Content-Type:** `application/json`
+
+#### Request Body
+```json
+{
+    "playbackId": "string",
+    "userId": "string"
+}
+```
+
+#### Response
+- **Success (200)**
+```json
+{
+    "message": "User deleted successfully",
+    "user": {
+        // User details
+    }
+}
+```
+- **Error (400)**
+```json
+{
+    "error": "User not found"
+}
+```
+
+### 5. Get Video
+Retrieves video details by playback ID.
+
+**Endpoint:** `/getvideo`  
+**Method:** `GET`  
+**Query Parameters:**
+- `playbackId`: string
+
+#### Response
+- **Success (200)**
+```json
+{
+    "message": "Video found",
+    "video": {
+        "playbackId": "string",
+        "viewMode": "string",
+        "amount": "number",
+        "assetName": "string",
+        "creatorId": "string",
+        "donation": [],
+        "Users": []
+    }
+}
+```
+- **Error (400)**
+```json
+{
+    "error": "Video not found"
+}
+```
+
+### 6. Delete Video
+Deletes a video from the system.
+
+**Endpoint:** `/deletevideo`  
+**Method:** `DELETE`  
+**Content-Type:** `application/json`
+
+#### Request Body
+```json
+{
+    "playbackId": "string"
+}
+```
+
+#### Response
+- **Success (200)**
+```json
+{
+    "message": "Video deleted successfully",
+    "video": {
+        // Deleted video details
+    }
+}
+```
+- **Error (400)**
+```json
+{
+    "error": "Error message"
 }
 ```
 
 ## Example Usage
 
-### Adding User Settings
+### Adding a Video
 ```javascript
-fetch('http://your-server-url/api/user/addsetting', {
+fetch('http://your-server-url/api/videos/addvideo', {
     method: 'POST',
     headers: {
         'Content-Type': 'application/json'
     },
     body: JSON.stringify({
+        playbackId: "video123",
+        viewMode: "paid",
+        amount: 10.99,
+        assetName: "My Video",
         creatorId: "user123",
-        logo: "https://example.com/logo.png",
-        title: "My Channel",
-        description: "Welcome to my channel",
-        bgcolor: "#ffffff",
-        color: "#000000",
-        fontSize: "16px",
-        fontFamily: "Arial"
+        donation: []
     })
 })
 .then(response => response.json())
 .then(data => console.log(data));
 ```
 
-### Getting User Settings
+### Getting a Video
 ```javascript
-fetch('http://your-server-url/api/user/getsetting/user123')
+fetch('http://your-server-url/api/videos/getvideo?playbackId=video123')
     .then(response => response.json())
     .then(data => console.log(data));
 ```
 
-### Updating User Settings
-```javascript
-fetch('http://your-server-url/api/user/updatesetting/user123', {
-    method: 'PUT',
-    headers: {
-        'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-        creatorId: "user123",
-        logo: "https://example.com/new-logo.png",
-        title: "Updated Channel Title",
-        description: "Updated channel description",
-        bgcolor: "#f0f0f0",
-        color: "#333333",
-        fontSize: "18px",
-        fontFamily: "Roboto"
-    })
-})
-.then(response => response.json())
-.then(data => console.log(data));
-```
-
 ## Notes
-- The `creatorId` is required for all operations and must be unique
-- All color values should be in valid CSS color format (hex, rgb, or named colors)
-- Font size should be in valid CSS size units (px, em, rem, etc.)
-- Font family should be a valid CSS font family name
-- Settings are specific to each creator and cannot be shared between creators 
+- All endpoints require proper authentication (not shown in documentation)
+- The `playbackId` is a unique identifier for each video
+- The `viewMode` can be either "free" or "paid"
+- The `amount` field is only relevant for paid videos
+- The `Users` array contains IDs of users who have paid for the video
+- The `donation` array stores donation amounts for the video
+- The `assetName` field is used to identify the video content 

@@ -1,6 +1,6 @@
-# Video Service API Documentation
+# Videos Service API Documentation
 
-This documentation provides details about the Video Service API endpoints and how to interact with them.
+This documentation provides details about the Videos Service API endpoints and how to interact with them.
 
 ## Base URL
 ```
@@ -23,7 +23,8 @@ Adds a new video to the system.
     "viewMode": "string",
     "amount": "number",
     "assetName": "string",
-    "creatorId": "string"
+    "creatorId": "string",
+    "donation": "array"
 }
 ```
 
@@ -38,6 +39,7 @@ Adds a new video to the system.
         "amount": "number",
         "assetName": "string",
         "creatorId": "string",
+        "donation": [],
         "Users": []
     }
 }
@@ -158,6 +160,7 @@ Retrieves video details by playback ID.
         "amount": "number",
         "assetName": "string",
         "creatorId": "string",
+        "donation": [],
         "Users": []
     }
 }
@@ -200,12 +203,6 @@ Deletes a video from the system.
 }
 ```
 
-## Error Handling
-All endpoints follow a consistent error handling pattern:
-- 200: Success
-- 400: Client error (invalid request, not found, etc.)
-- 500: Server error
-
 ## Example Usage
 
 ### Adding a Video
@@ -220,7 +217,8 @@ fetch('http://your-server-url/api/videos/addvideo', {
         viewMode: "paid",
         amount: 10.99,
         assetName: "My Video",
-        creatorId: "user123"
+        creatorId: "user123",
+        donation: []
     })
 })
 .then(response => response.json())
@@ -235,8 +233,10 @@ fetch('http://your-server-url/api/videos/getvideo?playbackId=video123')
 ```
 
 ## Notes
-
+- All endpoints require proper authentication (not shown in documentation)
 - The `playbackId` is a unique identifier for each video
-- The `viewMode` can be either "free" or "monthly" or "onetime"
+- The `viewMode` can be either "free" or "paid"
 - The `amount` field is only relevant for paid videos
-- The `Users` array contains IDs of users who have paid for the video 
+- The `Users` array contains IDs of users who have paid for the video
+- The `donation` array stores donation amounts for the video
+- The `assetName` field is used to identify the video content 

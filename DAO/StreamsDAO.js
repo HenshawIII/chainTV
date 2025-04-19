@@ -24,7 +24,7 @@ export default class StreamsDAO {
         }
     }
 
-    static async insertStream(playbackId,viewMode,description,amount,streamName,creatorId) {
+    static async insertStream(playbackId,viewMode,description,amount,streamName,creatorId,logo,title,bgcolor,color,fontSize,fontFamily,donation) {
         try {
             
             const stream =  await Streams.insertOne({
@@ -35,6 +35,13 @@ export default class StreamsDAO {
                 streamName,
                 creatorId,
                 Users:[],
+                logo,
+                title,
+                bgcolor,
+                color,
+                fontSize,
+                fontFamily,
+                donation,
             });
             return stream;
 

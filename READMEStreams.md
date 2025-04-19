@@ -24,7 +24,14 @@ Adds a new stream to the system.
     "description": "string",
     "amount": "number",
     "streamName": "string",
-    "creatorId": "string"
+    "creatorId": "string",
+    "logo": "string",
+    "title": "string",
+    "bgcolor": "string",
+    "color": "string",
+    "fontSize": "string",
+    "fontFamily": "string",
+    "donation": "array"
 }
 ```
 
@@ -40,6 +47,13 @@ Adds a new stream to the system.
         "amount": "number",
         "streamName": "string",
         "creatorId": "string",
+        "logo": "string",
+        "title": "string",
+        "bgcolor": "string",
+        "color": "string",
+        "fontSize": "string",
+        "fontFamily": "string",
+        "donation": [],
         "Users": []
     }
 }
@@ -161,6 +175,13 @@ Retrieves stream details by playback ID.
         "amount": "number",
         "streamName": "string",
         "creatorId": "string",
+        "logo": "string",
+        "title": "string",
+        "bgcolor": "string",
+        "color": "string",
+        "fontSize": "string",
+        "fontFamily": "string",
+        "donation": [],
         "Users": []
     }
 }
@@ -203,43 +224,6 @@ Deletes a stream from the system.
 }
 ```
 
-## Donation API
-
-### Add Donation
-Adds a donation to a creator's streams and videos.
-
-**Endpoint:** `/api/addonation`  
-**Method:** `PUT`  
-**Content-Type:** `application/json`
-
-#### Request Body
-```json
-{
-    "creatorId": "string",
-    "amount": "number"
-}
-```
-
-#### Response
-- **Success (200)**
-```json
-{
-    "message": "Donation added successfully"
-}
-```
-- **Error (400)**
-```json
-{
-    "error": "Error message"
-}
-```
-
-## Error Handling
-All endpoints follow a consistent error handling pattern:
-- 200: Success
-- 400: Client error (invalid request, not found, etc.)
-- 500: Server error
-
 ## Example Usage
 
 ### Adding a Stream
@@ -255,33 +239,32 @@ fetch('http://your-server-url/api/streams/addstream', {
         description: "My Stream Description",
         amount: 10.99,
         streamName: "My Stream",
-        creatorId: "user123"
+        creatorId: "user123",
+        logo: "https://example.com/logo.png",
+        title: "Stream Title",
+        bgcolor: "#ffffff",
+        color: "#000000",
+        fontSize: "16px",
+        fontFamily: "Arial",
+        donation: []
     })
 })
 .then(response => response.json())
 .then(data => console.log(data));
 ```
 
-### Adding a Donation
+### Getting a Stream
 ```javascript
-fetch('http://your-server-url/api/addonation', {
-    method: 'PUT',
-    headers: {
-        'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-        creatorId: "user123",
-        amount: 50.00
-    })
-})
-.then(response => response.json())
-.then(data => console.log(data));
+fetch('http://your-server-url/api/streams/getstream?playbackId=stream123')
+    .then(response => response.json())
+    .then(data => console.log(data));
 ```
 
 ## Notes
-
+- All endpoints require proper authentication (not shown in documentation)
 - The `playbackId` is a unique identifier for each stream
-- The `viewMode` can be either "free" or "monthly" or "onetime"
+- The `viewMode` can be either "free" or "paid"
 - The `amount` field is only relevant for paid streams
 - The `Users` array contains IDs of users who have paid for the stream
-- Donations are added to both streams and videos associated with the creator 
+- The `donation` array stores donation amounts for the stream
+- UI customization fields (logo, title, colors, fonts) are optional but recommended for better user experience 
