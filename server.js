@@ -186,6 +186,84 @@ app.delete("/api/delete/products/:id/:user_id", async (req, res) => {
     }   
 })
 
+app.get('/api/creators/:creatorId/profile',async (req,res)=>{
+    try {
+        const {creatorId} = req.params;
+        const result = await Users.findOne({creatorId});
+        if(result.error) {
+            return res.status(400).json({error: result.error});
+        }
+        return res.status(200).json({profile: result});
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({error: error.message});
+    }
+})
+
+
+app.post('/api/creators/:creatorId/profile',async (req,res)=>{
+    try {
+        const {creatorId} = req.params;
+        const result = await Users.insertOne({...req.body,creatorId});
+        if(result.error) {
+            return res.status(400).json({error: result.error});
+        }
+        return res.status(200).json({message: "Profile added successfully"});
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({error: error.message});
+    }
+})
+
+// app.put('/api/creators/:creatorId/profile',async (req,res)=>{
+//     try {
+//         const {creatorId} = req.params;
+//         const result = await Users.updateOne({creatorId},{$set: req.body});
+//     } catch (error) {
+//         console.log(error);
+//         return res.status(500).json({error: error.message});
+//     }
+// })
+
+app.put("/api/creators/:creatorId/profile", async (req, res) => {
+    try {
+        const { creatorId } = req.params;
+        const {_id, ...rest} = req.body;
+        // First check if creator exists
+        const existingCreator = await Users.findOne({ creatorId });
+        if (!existingCreator) {
+            return res.status(404).json({ error: "Creator not found" });
+        }
+
+        // If creator exists, update their data
+        const result = await Users.updateOne(
+            { creatorId },
+            { $set: { ...rest} }
+        );
+
+        if (result.error) {
+            return res.status(400).json({ error: result.error });
+        }
+
+        if (result.matchedCount === 0) {
+            return res.status(404).json({ error: "Creator not found" });
+        }
+
+        if (result.modifiedCount === 0) {
+            return res.status(200).json({ message: "No changes were made" });
+        }
+
+        return res.status(200).json({ 
+            message: "Creator updated successfully",
+            modifiedCount: result.modifiedCount
+        });
+
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ error: error.message });
+    }
+});
+
 app.post("/api/waitlist",async (req,res)=>{
     try {
         const {email,name,organization} = req.body;

@@ -239,4 +239,85 @@ fetch('http://your-server-url/api/videos/getvideo?playbackId=video123')
 - The `amount` field is only relevant for paid videos
 - The `Users` array contains IDs of users who have paid for the video
 - The `donation` array stores donation amounts for the video
-- The `assetName` field is used to identify the video content 
+- The `assetName` field is used to identify the video content
+
+# Creator Update API
+
+### Update Creator
+Updates a creator's data by their ID.
+
+**Endpoint:** `/api/creator/update/:creatorId`  
+**Method:** `PUT`  
+**Content-Type:** `application/json`
+
+#### URL Parameters
+- `creatorId`: string (creator's unique identifier)
+
+#### Request Body
+```json
+{
+    // Any fields that need to be updated
+    "field1": "value1",
+    "field2": "value2"
+}
+```
+
+#### Response
+- **Success (200)**
+```json
+{
+    "message": "Creator updated successfully",
+    "modifiedCount": 1
+}
+```
+OR
+```json
+{
+    "message": "No changes were made"
+}
+```
+
+- **Error (404)**
+```json
+{
+    "error": "Creator not found"
+}
+```
+
+- **Error (400)**
+```json
+{
+    "error": "Error message"
+}
+```
+
+- **Error (500)**
+```json
+{
+    "error": "Server error message"
+}
+```
+
+#### Example Usage
+```javascript
+fetch('http://your-server-url/api/creator/update/creator123', {
+    method: 'PUT',
+    headers: {
+        'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+        name: "New Name",
+        email: "newemail@example.com"
+        // Add any other fields to update
+    })
+})
+.then(response => response.json())
+.then(data => console.log(data));
+```
+
+#### Notes
+- The endpoint first checks if the creator exists
+- Only provided fields in the request body will be updated
+- If no changes are made to existing values, you'll receive a "No changes were made" message
+- The response includes the number of documents modified
+- Authentication may be required (not shown in example) 
