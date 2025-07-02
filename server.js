@@ -12,6 +12,7 @@ import {Streams} from "./DAO/StreamsDAO.js";
 import {Videos} from "./DAO/VideosDAO.js";
 import {Users} from "./DAO/UsersDAO.js";
 import WaitlistDAO from "./DAO/WaitlistDAO.js";
+import { Chats } from "./DAO/ChatsDAO.js";
 
 const app = express();
 
@@ -190,13 +191,14 @@ app.get('/api/creators/:creatorId/profile',async (req,res)=>{
     try {
         const {creatorId} = req.params;
         const result = await Users.findOne({creatorId});
-        if(result.error) {
-            return res.status(400).json({error: result.error});
+        console.log(result);
+        if(!result) {
+            return res.status(400).json({error: "Creator not found"});
         }
         return res.status(200).json({profile: result});
     } catch (error) {
         console.log(error);
-        return res.status(500).json({error: error.message});
+        return res.status(500).json({error: error});
     }
 })
 
@@ -260,6 +262,39 @@ app.put("/api/creators/:creatorId/profile", async (req, res) => {
 
     } catch (error) {
         console.error(error);
+        return res.status(500).json({ error: error });
+    }
+});
+
+app.get("/api/chat/:streamId/fetch", async (req, res) => {
+    try {
+        const { streamId } = req.params;
+        // Find all chat documents for this streamId
+        const chats = await Chats.find({ streamId }).toArray();
+        return res.status(200).json(chats);
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({ error: error.message });
+    }
+});
+
+app.post("/api/chat/:streamId/send", async (req, res) => {
+    try {
+        const { streamId } = req.params;
+        const { message, sender } = req.body;
+        const chatDoc = {
+            streamId,
+            message,
+            sender,
+            createdAt: new Date()
+        };
+        const result = await Chats.insertOne(chatDoc);
+        if (result.error) {
+            return res.status(400).json({ error: result.error });
+        }
+        return res.status(200).json({ message: "Message sent successfully" });
+    } catch (error) {
+        console.log(error);
         return res.status(500).json({ error: error.message });
     }
 });
