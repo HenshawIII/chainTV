@@ -80,12 +80,34 @@ router.route("/getstream").get(async (req,res) => {
 
 router.route("/deletestream").delete(async (req,res) => {
     try {
-        const {playbackId} = req.body;
+        const {playbackId} = req.query;
         const result = await StreamsDAO.deleteStream(playbackId);
         if(result.error) {
             return res.status(400).json({error: result.error});
         }
         return res.status(200).json({message: "Stream deleted successfully",stream: result});
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({error: error.message});
+    }
+})
+
+router.route("/updatestream").put(async (req,res) => {
+    try {
+        const { ...updateData} = req.body;
+        // console.log(updateData);
+        const playbackId = req.query.playbackid;
+        if(!playbackId) {
+            return res.status(400).json({error: "playbackId is required"});
+        }
+        const result = await StreamsDAO.updateStream(playbackId, updateData);
+        if(result.error) {
+            return res.status(400).json({error: result.error});
+        }
+        if(result.matchedCount === 0) {
+            return res.status(404).json({error: "Stream not found"});
+        }
+        return res.status(200).json({message: "Stream updated successfully", modifiedCount: result.modifiedCount || 0});
     } catch (error) {
         console.log(error);
         return res.status(500).json({error: error.message});

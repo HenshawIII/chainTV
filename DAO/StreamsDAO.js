@@ -115,4 +115,14 @@ export default class StreamsDAO {
             return {error: error};
         }
     }   
+
+	static async updateStream(playbackId, updateData) {
+		try {
+			const result = await Streams.updateOne({playbackId}, { $set: updateData });
+			return result;
+		} catch (error) {
+			console.error(`Unable to update stream: ${error}`);
+			return {error: error};
+		}
+	}
 }

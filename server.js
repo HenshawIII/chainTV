@@ -13,16 +13,80 @@ import {Videos} from "./DAO/VideosDAO.js";
 import {Users} from "./DAO/UsersDAO.js";
 import WaitlistDAO from "./DAO/WaitlistDAO.js";
 import { Chats } from "./DAO/ChatsDAO.js";
+import requestLogger from "./middleware/logger.js";
+// import { X402PaymentHandler } from '@payai/x402-solana/server';
+// import { paymentMiddleware} from "x402-express";
+// import { facilitator } from "@coinbase/x402";
+import {config} from "dotenv";
+config();
+
 
 const app = express();
+
+// const x402 = new X402PaymentHandler({
+//     network: 'solana',
+//     treasuryAddress: process.env.TREASURY_WALLET_ADDRESS || 'Dh1r65uVX6qjYVMsQs2LBm23sYnkS6LpPqjXHQe6gBC2',
+//     facilitatorUrl: 'https://facilitator.payai.network',
+//     rpcUrl:"https://solana-mainnet.g.alchemy.com/v2/8rgdAH9Vy_zuXQFA2hedqK_a_3GAxvuZ"
+//   });
 
 app.use(cors());
 app.use(express.json({limit:"50mb"}));
 app.use(express.urlencoded({extended: true, limit:"50mb"}));
 
+
+
+app.use(requestLogger);
+
 app.get("/", (req, res) => {
     res.send("Hello World");
 }); 
+
+
+
+// app.post('/api/paid-endpoint', async (req, res) => {
+//     try {
+//     const paymentHeader = x402.extractPayment(req.headers);
+    
+//     const paymentRequirements = await x402.createPaymentRequirements({
+//       price: {
+//         amount: "250",  // $2.50 USDC
+//         asset: {
+//           address: "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v" // USDC devnet
+//         }
+//       },
+//       network: 'solana',
+//       config: {
+//         description: 'API Request',
+//         resource: `http://localhost:5300/api/paid-endpoint`,
+//       }
+//     });
+    
+//     if (!paymentHeader) {
+//         console.log("Payment header not found");
+//       const response = x402.create402Response(paymentRequirements);
+//       console.log(response);
+//       return res.status(response.status).json(response.body);
+//     }
+//     // console.log(JSON.stringify(paymentHeader, null, 2));
+//     const verified = await x402.verifyPayment(paymentHeader, paymentRequirements);
+//     if (!verified) {
+//         console.log("Invalid payment");
+//         console.log(verified);
+//       return res.status(402).json({ error: 'Invalid payment' });
+//     }
+  
+//     // const result = await yourBusinessLogic(req);
+//     console.log("Payment successful");
+//     const result = {message: "Payment successful"};
+//     await x402.settlePayment(paymentHeader, paymentRequirements);
+//     console.log("Payment settled");
+//     return res.json(result);
+//   } catch (error) {
+//     console.log(error);
+//     return res.status(500).json({error: error.message});
+//   }
+// });
 
 app.post("/api/auth/register", async (req, res) => {
    try {
@@ -329,8 +393,15 @@ app.post("/api/waitlist",async (req,res)=>{
 //     }
 // })  
 
+
+
 app.use("/api/streams",streamsRouter);
 app.use("/api/videos",videosRouter);
 
 
+app.all("*",(req,res)=>{
+    return res.status(404).json({error: "Route not found"});
+});
+
 export default app;
+
