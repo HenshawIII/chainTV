@@ -52,12 +52,17 @@ export default class StreamsDAO {
         }
     }
 
-    static async addPayingUser(playbackId, userId) {
+    static async addPayingUser(playbackId, walletAddress, solAmount, usdAmount) {
 
         try {
-            // const stream = await Streams.findOne({_id: new ObjectId(streamId)});
-            // const user = await Users.findOne({_id: new ObjectId(userId)});
-            const User = await Streams.updateOne({playbackId},{$push:{Users:userId}});
+            // Create the user object with payment details
+            const payingUser = {
+                payingUser: walletAddress,
+                solAmount: solAmount,
+                usdAmount: usdAmount,
+                date: new Date()
+            };
+            const User = await Streams.updateOne({playbackId},{$push:{Users:payingUser}});
             return User;
         } catch (error) {
             console.error(`Unable to add paying user: ${error}`);

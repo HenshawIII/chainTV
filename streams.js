@@ -38,8 +38,8 @@ router.route("/findpayinguser").get(async (req,res) => {
 
 router.route("/addpayinguser").post(async (req,res) => {
     try {
-        const {playbackId,userId} = req.body;
-        const result = await StreamsDAO.addPayingUser(playbackId,userId);
+        const {playbackId, walletAddress, solAmount, usdAmount} = req.body;
+        const result = await StreamsDAO.addPayingUser(playbackId, walletAddress, solAmount, usdAmount);
         if(result.error) {
             return res.status(400).json({error: result.error});
         }

@@ -270,6 +270,7 @@ app.get('/api/creators/:creatorId/profile',async (req,res)=>{
 app.post('/api/creators/:creatorId/profile',async (req,res)=>{
     try {
         const {creatorId} = req.params;
+        // console.log(req.body);
         const result = await Users.insertOne({...req.body,creatorId});
         if(result.error) {
             return res.status(400).json({error: result.error});
@@ -300,11 +301,11 @@ app.put("/api/creators/:creatorId/profile", async (req, res) => {
         if (!existingCreator) {
             return res.status(404).json({ error: "Creator not found" });
         }
-
-        // If creator exists, update their data
-        const result = await Users.updateOne(
+        // console.log(rest);
+        // Replace the entire document with new data, preserving _id and creatorId
+        const result = await Users.replaceOne(
             { creatorId },
-            { $set: { ...rest} }
+            { ...rest, _id: existingCreator._id, creatorId: creatorId }
         );
 
         if (result.error) {
